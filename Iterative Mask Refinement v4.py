@@ -122,6 +122,9 @@ class NPCharacterizationApp:
         result_window.title("View Data")
         result_window.geometry("600x400")  # Adjust window size for visibility
 
+        if not isinstance(self.dimensionsarray, np.ndarray) or self.dimensionsarray.ndim == 1:
+            self.dimensionsarray = np.atleast_2d(self.dimensionsarray)
+
         # Extract headers (first row) and ensure they are strings
         headers = [str(header) for header in self.dimensionsarray[0]]
         tree = ttk.Treeview(result_window, show="headings")
@@ -300,7 +303,7 @@ class NPCharacterizationApp:
     #Runs the analysis on the NPs
     def analyse_background_task(self):
 
-        self.dimensionsarray = ["MinFeret","Orthogonal Length", "Radius","Circularity"]            
+        self.dimensionsarray = np.array([["MinFeret", "Orthogonal Length", "Radius", "Circularity"]])            
         
         nanoparticles = self.identify_nanoparticles()
         total_particles = len(nanoparticles)
@@ -446,7 +449,7 @@ def analyse_single_nanoparticle(nanoparticle_info,regions):
     regionOfInterest[:,:] = 0
     regionOfInterest[tuple(zip(*object.coords))] = 1
 
-    AR = AR = object.major_axis_length / object.minor_axis_length
+    AR = object.major_axis_length / object.minor_axis_length
     
     feret_result = feret_calculate(regionOfInterest)
     minFeretAngle = feret_result["minf_angle"] * 180 / math.pi
